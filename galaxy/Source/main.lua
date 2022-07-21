@@ -16,10 +16,6 @@ local function initialize()
 	gfx.setBackgroundColor(gfx.kColorBlack)
 	gfx.fillRect(0, 0, 400, 240)
 
-	
-local counter = gfx.image.new(1,1)
-	-- local star = Star(100, 100, 20)
-
 	galaxy = Galaxy()
 	-- local ship = Ship(200, 120, 15, 15)
 end
@@ -29,18 +25,18 @@ initialize()
 local currentCrankPosition = nil
 
 function pd.update()
-	function pd.upButtonDown()
-		galaxy:moveCamera(0, -1)
-	end
-	function pd.downButtonDown()
-		galaxy:moveCamera(0, 1)
-	end
-	function pd.leftButtonDown()
-		galaxy:moveCamera(-1, 0)
-	end
-	function pd.rightButtonDown()
-		galaxy:moveCamera(1, 0)
-	end
+	-- function pd.upButtonDown()
+	-- 	galaxy:moveCamera(0, -1)
+	-- end
+	-- function pd.downButtonDown()
+	-- 	galaxy:moveCamera(0, 1)
+	-- end
+	-- function pd.leftButtonDown()
+	-- 	galaxy:moveCamera(-1, 0)
+	-- end
+	-- function pd.rightButtonDown()
+	-- 	galaxy:moveCamera(1, 0)
+	-- end
 
 	-- function pd.AButtonDown()
 	function pd.cranked(crank, _)
@@ -50,8 +46,8 @@ function pd.update()
 		if idx ~= currentCrankPosition then
 			currentCrankPosition = idx
 
-			galaxy:getStar(idx + 1)
-			galaxy:regenerateGalaxy()
+			-- galaxy:getStar(idx + 1)
+			-- galaxy:regenerateGalaxy()
 		end
 	end
 
