@@ -1,4 +1,4 @@
-import 'globals'
+import 'modules/globals'
 
 class('Star').extends(gfx.sprite)
 
@@ -20,23 +20,23 @@ function Star:init(pos, sector)
     varianceY *= math.random() < 0.5 and 1 or -1
     
     self.position = geo.point.new(
-    sector.x * 16 + starStart.x,
-    sector.y * 16 + starStart.y
-)
+        sector.x * 16 + starStart.x,
+        sector.y * 16 + starStart.y
+    )
 
-self.radius = math.random(3,10)
-self.dither = math.random() * .75
+    self.radius = math.random(3,10)
+    self.dither = math.random() * .75
 
-if (
-self.position.x - self.radius/2 >= starStart.x and 
-self.position.x + self.radius/2 <= starStart.x + galaxyDims.x - 10 and
-self.position.y - self.radius/2 >= starStart.y and
-self.position.y + self.radius/2 <= starStart.y + galaxyDims.y - 10
-) then
-    self.starExists = true
-else
-    self.starExists = false
-end
+    if (
+    self.position.x - self.radius/2 >= starStart.x and 
+    self.position.x + self.radius/2 <= starStart.x + galaxyDims.x - 10 and
+    self.position.y - self.radius/2 >= starStart.y and
+    self.position.y + self.radius/2 <= starStart.y + galaxyDims.y - 10
+    ) then
+        self.starExists = true
+    else
+        self.starExists = false
+    end
 end
 
 function Star:unmark()

@@ -1,6 +1,6 @@
-import 'globals'
-import 'star'
-import 'menu'
+import 'modules/globals'
+import 'modules/star'
+import 'modules/menu'
 
 class('Galaxy').extends()
 
@@ -10,7 +10,6 @@ function Galaxy:init()
     self.starsInSector = {}
     self.markedStar = nil
     
-    self.menu = Menu()
     self:regenerateGalaxy()
 end
 
@@ -36,6 +35,7 @@ function Galaxy:moveCamera(dx, dy)
     end
     
     self:regenerateGalaxy()
+    self:drawGalaxy()
 end
 
 function Galaxy:getStar(idx)
@@ -71,12 +71,14 @@ function Galaxy:regenerateGalaxy()
         end
     end
     
-    self.menu:setNumStars(#self.starsInSector)
     -- print("star count: " .. #self.starsInSector)
-    self:drawGalaxy()
+    -- self:drawGalaxy()
 end
 
 function Galaxy:drawGalaxy()
+    self.menu = Menu()
+    self.menu:setNumStars(#self.starsInSector)
+
     for starIndex = 1, #self.starsInSector, 1 do
         self.starsInSector[starIndex]:drawStar()
     end

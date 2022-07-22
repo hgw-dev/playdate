@@ -1,4 +1,4 @@
-import 'globals'
+import 'modules/globals'
 
 class('Ship').extends(gfx.sprite)
 
