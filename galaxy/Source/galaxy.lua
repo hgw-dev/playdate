@@ -2,7 +2,7 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 local geo <const> = pd.geometry
 
-import 'Star'
+import 'star'
 
 local start <const> = { x = 5, y = 30 }
 local starStart <const> = { x = start.x + 5, y = start.y + 5 }
@@ -22,12 +22,12 @@ local globalSeed = math.random()
 class('Galaxy').extends()
 
 function Galaxy:init()
-
     self.cameraPosition = geo.vector2D.new(0.5, 0.5)
 
     self.starsInSector = {}
     self.markedStar = nil
 
+    self.globalSeed = globalSeed
     self.start = start
     self.starStart = starStart
     self.galaxyDims = galaxyDims
@@ -42,17 +42,17 @@ function Menu:init()
 
     self.numStars = 0
 
-    -- local borderImage = gfx.image.new(galaxyDims.x, galaxyDims.y)
-    -- local border = geo.rect.new(0,0, galaxyDims.x, galaxyDims.y)
-	-- gfx.pushContext(borderImage)
-    --     gfx.setLineWidth(5)
-    --     gfx.setColor(gfx.kColorWhite)
-    --     gfx.drawRect(border)
-    -- gfx.popContext()
+    local borderImage = gfx.image.new(galaxyDims.x, galaxyDims.y)
+    local border = geo.rect.new(0,0, galaxyDims.x, galaxyDims.y)
+	gfx.pushContext(borderImage)
+        gfx.setLineWidth(5)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.drawRect(border)
+    gfx.popContext()
 
-    -- local borderSprite = gfx.sprite.new(borderImage)
-    -- borderSprite:moveTo(start.x+galaxyDims.x/2, start.y+galaxyDims.y/2)
-    -- borderSprite:add()
+    local borderSprite = gfx.sprite.new(borderImage)
+    borderSprite:moveTo(start.x+galaxyDims.x/2, start.y+galaxyDims.y/2)
+    borderSprite:add()
 
     self:updateMenu()
 	self:moveTo(200, 30)
@@ -79,21 +79,40 @@ function Menu:updateMenu()
 end
 
 function Galaxy:moveCamera(dx, dy)
-    local amount = 1
+    local amount = 2
     if pd.buttonIsPressed(pd.kButtonB) then
-        amount = 0.1
+        amount = 1
     end
+    if pd.buttonIsPressed(pd.kButtonA) then
+        amount = 4
+    end
+
     self.cameraPosition.y += amount*dy
     self.cameraPosition.x += amount*dx
 
-    self.markedStar = nil
+    if self.markedStar ~= nil then
+        self.markedStar.marked = false
+        self.markedStar = nil
+    end
+
+    for _, k in ipairs(self.starsInSector) do
+        k:remove()
+    end
+    
     self:regenerateGalaxy()
 end
 
 function Galaxy:getStar(idx)
+    -- print("Stars in sector " .. #self.starsInSector .. " marking Star #" .. idx)
     local star = self.starsInSector[idx]
+    
+    if self.markedStar ~= nil then
+        self.markedStar.marked = false
+    end
+    
+    star.marked = true
     self.markedStar = star
-    print("Stars in sector " .. #self.starsInSector .. " marking Star #" .. idx)
+    self:drawGalaxy()
 end
 
 function Galaxy:regenerateGalaxy()
@@ -106,44 +125,22 @@ function Galaxy:regenerateGalaxy()
 
             local pos = geo.vector2D.new(posX, posY)
             local sector = geo.vector2D.new(sectorX, sectorY)
-            local star = Star(pos, sector, starStart, galaxyDims, globalSeed);
+            local star = Star(pos, sector, self);
 
             if star.starExists then
-                print(pos.x, pos.y)
+                -- print(pos.x, pos.y)
                 self.starsInSector[#self.starsInSector + 1] = star
             end
         end
     end
 
     self.menu:setNumStars(#self.starsInSector)
-    print("star count: " .. #self.starsInSector)
-    -- self:drawGalaxy()
+    -- print("star count: " .. #self.starsInSector)
+    self:drawGalaxy()
 end
 
--- function Galaxy:drawGalaxy()
-
-    -- if self.markedStar ~= nil then 
-    --     gfx.pushContext()
-    --         gfx.setColor(gfx.kColorWhite)
-    --         gfx.drawCircleAtPoint(self.markedStar.position, self.markedStar.radius * 2.5)
-    --     gfx.popContext()
-    --  end
-
-    -- for starIndex = 1, #self.starsInSector, 1 do
-    --     self.starsInSector[starIndex]:draw()
-        -- local star = self.starsInSector[starIndex]
-        
-        -- local starImage = gfx.image.new(50,50)
-    
-        -- gfx.pushContext(starImage)
-        --     gfx.setColor(gfx.kColorWhite)
-        --     gfx.setDitherPattern(star.dither)
-        --     gfx.fillCircleAtPoint(10,10, star.radius)
-        -- gfx.popContext()
-        
-        -- local starSprite = gfx.sprite.new(starImage)
-        -- starSprite:moveTo(star.position.x, star.position.y)
-        -- starSprite:add()
-
---     end
--- end
+function Galaxy:drawGalaxy()
+    for starIndex = 1, #self.starsInSector, 1 do
+        self.starsInSector[starIndex]:drawStar()
+    end
+end
