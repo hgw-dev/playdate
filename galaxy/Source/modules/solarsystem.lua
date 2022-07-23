@@ -1,156 +1,78 @@
 import 'modules/globals'
 
+class('Solarsystem').extends()
 
--- Generation variables. Controlled in the options grid
-local generationKeys = { "size", "z", "repeatValue", "octaves", "persistence", "isArray"}
-local generationVariables = {
-    size = 10,
-    z = 0,
-    repeatValue = 0,
-    octaves = 1,
-    persistence = 1.0,
-    isArray = false
-}
-local isModfiyingVariables = true
+function Solarsystem:init(star)
+    self.star = star
 
-
-function variableDisplay(index)
-    local label = generationKeys[index]
-    local value = generationVariables[label]
-    local result = "???"
-    if label == "size" or label == "octaves" then
-        result = string.format("%s = %d", label, value)
-    elseif label == "z" then
-        result = string.format("z = %.1f", value)
-    elseif label == "persistence" then
-        result = string.format("persist = %.2f", value)
-    elseif label == "repeatValue" then
-        -- This is special, because `repeat` is a Lua keyword
-        result = string.format("repeat = %d", value)
-    elseif label == "isArray" then
-        if generationVariables.isArray then
-            result = ".perlinArray(...)"
-        else
-            result = ".perlin(...)"
-        end
-    end
-    return result
+    self:drawBorders()
+    self:drawInfo()
+    self:drawSystem()
 end
 
--- class('optionList').extends(playdate.ui.gridview)
+function Solarsystem:drawBorders()
+    local instructionX = 125
+        
+    local barrier = 15 
+    local solarSystemImage = gfx.image.new(400,240)
 
--- function optionList:init()
-    -- Options list view
-    optionList = playdate.ui.gridview.new(0, 25)
-    -- optionList.super.init(self, 0, 25)
-    optionList:setNumberOfRows(#generationKeys)
-    optionList:setCellPadding(0, 0, 5, 5)
-    optionList:setContentInset(12, 12, 20, 20)
+    gfx.pushContext(solarSystemImage)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(barrier, barrier, 400-(barrier*2),240-(barrier*2))
+        
+        barrier = 20
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(barrier, barrier, 400-(barrier*2),240-(barrier*2))
 
-    -- Add a background to the optionList, with a vertical line to the left
-    local backgroundImage = gfx.image.new(
-        playdate.display.getWidth() / 2,
-        playdate.display.getHeight(),
-        gfx.kColorBlack
-    )
-    gfx.lockFocus(backgroundImage)
-    gfx.setColor(gfx.kColorWhite)
-    gfx.drawLine(0, 0, 0, playdate.display.getHeight())
-    gfx.unlockFocus()
-    optionList.backgroundImage = backgroundImage
--- end
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 
+    gfx.popContext()
 
--- function optionList:drawCell(section, row, column, selected, x, y, width, height)
---     local plusWidth, plusHeight = gfx.getTextSize("*+*")
---     local padding = 6
---     local textY = y + (height - plusHeight) / 2
---     gfx.setColor(gfx.kColorWhite)
---     if selected then
---         gfx.fillRoundRect(x, y, width, height, 4)
---         gfx.setImageDrawMode(gfx.kDrawModeCopy)
---         gfx.drawText("*+*", x + width - plusWidth - padding, textY)
---         gfx.drawText("*-*", x + padding, textY)
---     else
---         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
---     end
---     gfx.drawTextInRect(
---         variableDisplay(row),
---         x + plusWidth + 2*padding,
---         y+4,
---         width - 2*plusWidth - 4*padding,
---         height,
---         nil,
---         "...",
---         kTextAlignment.center
---     )
--- end
+    local starSprite = gfx.sprite.new(solarSystemImage)
 
-function optionList:increaseSelectedValue()
-    local key = generationKeys[self:getSelectedRow()]
-    if key == "size" or key == "octaves" or key == "repeatValue" then
-        generationVariables[key] += 1
-    elseif key == "z" then
-        local amount = 1.0
-        if playdate.buttonIsPressed(playdate.kButtonB) then
-            amount = 0.1
-        end
-        generationVariables[key] += amount
-    elseif key == "persistence" then
-        local amount = 0.1
-        if playdate.buttonIsPressed(playdate.kButtonB) then
-            amount = 0.01
-        end
-        generationVariables[key] += amount
-    elseif key == "isArray" then
-        generationVariables[key] = not generationVariables[key]
-    end
+    starSprite:moveTo((400)/2,(240)/2)
+    starSprite:add()
 end
 
-function optionList:decreaseSelectedValue()
-    local key = generationKeys[self:getSelectedRow()]
-    if key == "size" or key == "octaves" then
-        local newValue = math.max(1, generationVariables[key] - 1)
-        generationVariables[key] = newValue
-    elseif key == "repeatValue" then
-        generationVariables[key] -= 1
-    elseif key == "z" then
-        local amount = 1.0
-        if playdate.buttonIsPressed(playdate.kButtonB) then
-            amount = 0.1
-        end
-        generationVariables[key] -= amount
-    elseif key == "persistence" then
-        local amount = 0.1
-        if playdate.buttonIsPressed(playdate.kButtonB) then
-            amount = 0.01
-        end
-        generationVariables[key] -= amount
-    elseif key == "isArray" then
-        generationVariables[key] = not generationVariables[key]
-    end
+function Solarsystem:drawInfo()
+    local newimage = gfx.image.new(200,200)
+
+    gfx.pushContext(newimage)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.drawText("Position: " .. self.star.position.x .. ", " .. self.star.position.y, 10,10)
+        gfx.drawText("Radius: " .. self.star.radius, 10, 30)
+        gfx.drawText("Planets: " .. #self.star.planets, 10, 50)
+    gfx.popContext()
+    local newsprite = gfx.sprite.new(newimage)
+
+    newsprite:moveTo(115,115)
+    newsprite:add()
 end
 
 
--- class('Solarsystem').extends(gfx.sprite)
+function Solarsystem:drawSystem()
+    local newimage = gfx.image.new(400,150)
 
--- function Solarsystem:init()
---     Solarsystem.super.init(self)
+    gfx.pushContext(newimage)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.setDitherPattern(self.star.dither)
 
---     self:add()
--- end
+        gfx.fillCircleAtPoint(50, 50, self.star.radius*3)
 
+        local distance = 20
+        if #self.star.planets > 0 then
+            for planetIdx = 1, #self.star.planets, 1 do
+                local planet = self.star.planets[planetIdx]
+                
+                gfx.setColor(gfx.kColorWhite)
+                gfx.setDitherPattern(planet.dither)
+                gfx.fillCircleAtPoint(planetIdx * 40 + 100, 50, planet.radius*3)
+            end
+        end
+    gfx.popContext()
+    
+    local newsprite = gfx.sprite.new(newimage)
 
--- function Solarsystem:update()
-
-    -- if isModfiyingVariables then
-    --     optionList:drawInRect(220, 0, 180, 240)
-    -- end
-
-    -- -- Toggle the optionList when the user hits 🅰️
-    -- if playdate.buttonJustPressed(playdate.kButtonA) then
-    --     isModfiyingVariables = not isModfiyingVariables
-    --     drawEverything()
-    -- end
-    -- drawEverything()
--- end
+    newsprite:moveTo(230,160)
+    newsprite:add()
+end

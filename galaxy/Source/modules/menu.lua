@@ -27,8 +27,9 @@ function Menu:setNumStars(numStars)
 end
 
 function Menu:updateMenu()
-    local menuImage = gfx.image.new(pd.display.getWidth(), 50)
+    local menuImage = gfx.image.new(pd.display.getWidth(), 20)
     gfx.pushContext(menuImage)
+        gfx.clear()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText("Galaxy Explorer", 5, 5)
         gfx.drawText("Stars in sector: " .. self.numStars, 250, 5)
@@ -36,6 +37,6 @@ function Menu:updateMenu()
     
     self:setImage(menuImage) 
 
-    self:moveTo(200, 30)
+    self:moveTo(200, 10)
     self:add()
 end

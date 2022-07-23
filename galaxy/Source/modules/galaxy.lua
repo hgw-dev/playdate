@@ -38,7 +38,7 @@ function Galaxy:moveCamera(dx, dy)
     self:drawGalaxy()
 end
 
-function Galaxy:getStar(idx)
+function Galaxy:markStar(idx)
     -- print("Stars in sector " .. #self.starsInSector .. " marking Star #" .. idx)
     local star = self.starsInSector[idx]
     

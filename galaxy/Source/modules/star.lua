@@ -25,15 +25,24 @@ function Star:init(pos, sector)
     )
 
     self.radius = math.random(3,10)
-    self.dither = math.random() * .75
+    self.dither = math.random() * .85
 
     if (
-    self.position.x - self.radius/2 >= starStart.x and 
-    self.position.x + self.radius/2 <= starStart.x + galaxyDims.x - 10 and
-    self.position.y - self.radius/2 >= starStart.y and
-    self.position.y + self.radius/2 <= starStart.y + galaxyDims.y - 10
+        self.position.x - self.radius/2 >= starStart.x and 
+        self.position.x + self.radius/2 <= starStart.x + galaxyDims.x - 10 and
+        self.position.y - self.radius/2 >= starStart.y and
+        self.position.y + self.radius/2 <= starStart.y + galaxyDims.y - 10
     ) then
         self.starExists = true
+        local planets = {}
+
+        local numPlanets = math.random(1, 7)
+        if numPlanets > 0 then
+            for planet = 1, numPlanets, 1 do
+                planets[planet] = Planet()
+            end
+        end
+        self.planets = planets
     else
         self.starExists = false
     end
@@ -44,6 +53,17 @@ function Star:unmark()
 end
 function Star:mark()
     self.marked = true
+end
+
+class('Planet').extends()
+function Planet:init()
+    self.moons = math.random(1,4)
+    self.radius = math.random(1,4)
+    self.dither = math.random() * .85
+end
+
+function Planet:getRadius()
+    return self.radius
 end
 
 function Star:drawMarked()
