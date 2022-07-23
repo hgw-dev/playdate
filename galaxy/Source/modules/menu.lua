@@ -27,7 +27,7 @@ function Menu:setNumStars(numStars)
 end
 
 function Menu:updateMenu()
-    local menuImage = gfx.image.new(pd.display.getWidth(), 20)
+    local menuImage = gfx.image.new(pd.display.getWidth(), 25)
     gfx.pushContext(menuImage)
         gfx.clear()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
