@@ -43,6 +43,8 @@ function Star:init(pos, sector)
             end
         end
         self.planets = planets
+
+        self.systemName = markovChainGenerator:generate()
     else
         self.starExists = false
     end

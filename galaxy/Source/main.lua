@@ -10,7 +10,7 @@ import 'modules/globals'
 import 'modules/galaxy'
 import 'modules/solarsystem'
 
-local function initialize()
+local function initialize()    
     gfx.setBackgroundColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
 
@@ -86,7 +86,7 @@ function pd.update()
 
     
     gfx.sprite.update()
-    pd.drawFPS(200, 10)
+    -- pd.drawFPS(200, 10)
     pd.timer.updateTimers()
 
     -- if crankingIt == true then

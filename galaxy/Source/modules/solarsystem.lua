@@ -13,14 +13,14 @@ end
 function Solarsystem:drawBorders()
     local instructionX = 125
         
-    local barrier = 15 
+    local barrier = 10 
     local solarSystemImage = gfx.image.new(400,240)
 
     gfx.pushContext(solarSystemImage)
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(barrier, barrier, 400-(barrier*2),240-(barrier*2))
         
-        barrier = 20
+        barrier = 15
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(barrier, barrier, 400-(barrier*2),240-(barrier*2))
 
@@ -35,17 +35,20 @@ function Solarsystem:drawBorders()
 end
 
 function Solarsystem:drawInfo()
-    local newimage = gfx.image.new(200,200)
+    local newimage = gfx.image.new(400,240)
 
     gfx.pushContext(newimage)
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        gfx.drawText("Position: " .. self.star.position.x .. ", " .. self.star.position.y, 10,10)
-        gfx.drawText("Radius: " .. self.star.radius, 10, 30)
-        gfx.drawText("Planets: " .. #self.star.planets, 10, 50)
+        gfx.drawText("System:", 25, 25)
+        gfx.drawText(string.upper(self.star.systemName), 45, 45)
+
+        gfx.drawText("Position: " .. self.star.position.x .. ", " .. self.star.position.y, 220, 160)
+        gfx.drawText("Radius: " .. self.star.radius, 220, 180)
+        gfx.drawText("Planets: " .. #self.star.planets, 220, 200)
     gfx.popContext()
     local newsprite = gfx.sprite.new(newimage)
 
-    newsprite:moveTo(115,115)
+    newsprite:moveTo(200,120)
     newsprite:add()
 end
 

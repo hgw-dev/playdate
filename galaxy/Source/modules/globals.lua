@@ -1,8 +1,11 @@
+import 'modules/markov'
+
 pd = playdate
 gfx = pd.graphics
 geo = pd.geometry
 
 galaxy = nil
+markovChainGenerator = MarkovChain('stellar')
 
 start = { x = 5, y = 30 }
 starStart = { x = start.x + 5, y = start.y + 5 }
